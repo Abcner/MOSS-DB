@@ -1,0 +1,51 @@
+[{
+		"type":	"dimension",
+		"parameters":	[{
+				"from":	"customer",
+				"where":	[{
+						"op":	"=",
+						"column":	"c_city",
+						"value":	"UNITED KI1"
+					}, {
+						"op":	"=",
+						"column":	"c_city",
+						"value":	"UNITED KI5",
+						"logic":	"OR"
+					}],
+				"group by":	"c_city"
+			}, {
+				"from":	"supplier",
+				"where":	[{
+						"op":	"=",
+						"column":	"s_city",
+						"value":	"UNITED KI1"
+					}, {
+						"op":	"=",
+						"column":	"s_city",
+						"value":	"UNITED KI5",
+						"logic":	"OR"
+					}],
+				"group by":	"s_city"
+			}, {
+				"from":	"date",
+				"where":	[{
+						"op":	"=",
+						"column":	"d_yearmonth",
+						"value":	"Dec1997"
+					}],
+				"group by":	"d_year"
+			}]
+	}, {
+		"type":	"measure",
+		"parameters":	{
+			"from":	"lineorder",
+			"FK_cols":	["lo_custkey", "lo_suppkey", "lo_orderdate"],
+			"aggragate":	{
+				"aggerate":	"sum",
+				"agg_op":	"",
+				"agg_cols":	["lo_revenue"],
+				"agg_cols_type":	["column"]
+			},
+			"ProjectColumn":	["c_city", "s_city", "d_year", "revenue"]
+		}
+	}]

@@ -1,0 +1,46 @@
+[{
+		"type":	"dimension",
+		"parameters":	[{
+				"from":	"supplier",
+				"where":	[{
+						"op":	"=",
+						"column":	"s_nation",
+						"value":	"UNITED STATES"
+					}],
+				"group by":	"s_city"
+			}, {
+				"from":	"date",
+				"where":	[{
+						"op":	"=",
+						"column":	"d_year",
+						"value":	1997
+					}, {
+						"op":	"=",
+						"column":	"d_year",
+						"value":	1998,
+						"logic":	"OR"
+					}],
+				"group by":	"d_year"
+			}, {
+				"from":	"part",
+				"where":	[{
+						"op":	"=",
+						"column":	"p_category",
+						"value":	"MFGR#14"
+					}],
+				"group by":	"p_brand"
+			}]
+	}, {
+		"type":	"measure",
+		"parameters":	{
+			"from":	"lineorder",
+			"FK_cols":	["lo_custkey", "lo_orderdate", "lo_partkey", "lo_suppkey"],
+			"aggragate":	{
+				"aggerate":	"sum",
+				"agg_op":	"-",
+				"agg_cols":	["lo_revenue", "lo_supplycost"],
+				"agg_cols_type":	["column", "column"]
+			},
+			"ProjectColumn":	["d_year", "s_city", "p_brand", "profit"]
+		}
+	}]

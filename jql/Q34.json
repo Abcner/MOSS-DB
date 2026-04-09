@@ -1,0 +1,46 @@
+{
+   "SELECT":
+    {
+     "PROJECT":["C_CITY","S_CITY","D_YEAR","REVENUE"],
+     "ORDERBY":[
+                {"NAME":"D_YEAR",
+                 "MODE":"ASC"},
+                {"NAME":"REVENUE",
+                 "MODE":"DESC"}
+     ],
+     "OLAP":[{"ROLLUP":[
+      {"FILTER":
+         {"NAME":"D_YEARMONTH",
+          "EXPRESSION":"=",
+          "VALUE":"Dec1997"},
+       "GROUP":"D_YEAR",
+       "DIMENSION":"DATE"
+       }
+       ],
+               "DRILLDOWN":[
+                {"FILTER":
+                   {"NAME":"C_CITY",
+                    "EXPRESSION":"OR",
+                    "VALUE":["UNITED KI1","UNITED KI5"]},
+                 "GROUP":"C_CITY",
+                 "DIMENSION":"CUSTOMER"
+                 },
+                {"FILTER":
+                   {"NAME":"S_CITY",
+                    "EXPRESSION":"OR",
+                    "VALUE":["UNITED KI1","UNITED KI5"]
+                  },
+                 "GROUP":"S_CITY",
+                 "DIMENSION":"SUPPLIER"}]
+              }],
+     "FILTING":[],
+     "AGG":[{
+             "FUNCTION":"SUM",
+             "EXPRESSION":"LO_REVENUE",
+             "ALIAS":"REVENEU",
+             "TABLE":"LINEORDER",
+             "EXECUTION_ENGINE": "CPU"
+            }
+           ]
+    }
+   }

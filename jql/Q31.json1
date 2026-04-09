@@ -1,0 +1,46 @@
+[{
+		"type":	"dimension",
+		"parameters":	[{
+				"from":	"customer",
+				"where":	[{
+						"op":	"=",
+						"column":	"c_region",
+						"value":	"ASIA"
+					}],
+				"group by":	"c_nation"
+			}, {
+				"from":	"supplier",
+				"where":	[{
+						"op":	"=",
+						"column":	"s_region",
+						"value":	"ASIA"
+					}],
+				"group by":	"s_nation"
+			}, {
+				"from":	"date",
+				"where":	[{
+						"op":	">=",
+						"column":	"d_year",
+						"value":	1992
+					}, {
+						"op":	"<=",
+						"column":	"d_year",
+						"value":	1997,
+						"logic":	"AND"
+					}],
+				"group by":	"d_year"
+			}]
+	}, {
+		"type":	"measure",
+		"parameters":	{
+			"from":	"lineorder",
+			"FK_cols":	["lo_orderdate", "lo_custkey", "lo_suppkey"],
+			"aggragate":	{
+				"aggerate":	"sum",
+				"agg_op":	"",
+				"agg_cols":	["lo_revenue"],
+				"agg_cols_type":	["column"]
+			},
+			"ProjectColumn":	["c_nation", "s_nation", "d_year", "revenue"]
+		}
+	}]

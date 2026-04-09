@@ -1,0 +1,9 @@
+{
+	"tablename":    "supplier",
+	"row_count":    "1000000",
+	"type":	"dimension",
+	"columns":	["s_suppkey", "s_name", "s_address", "s_city", "s_nation", "s_region", "s_phone"],
+	"column_type":	["INTEGER", "VARCHAR(25)", "VARCHAR(25)", "VARCHAR(10)", "VARCHAR(15)","VARCHAR(12)", "VARCHAR(15)"],
+	"FK_tablenames":	["city_S"],
+	"FK_columns":    ["city_FK_s"]
+}

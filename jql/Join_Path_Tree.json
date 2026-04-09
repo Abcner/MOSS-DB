@@ -1,0 +1,142 @@
+{
+    "DIMENSION_HIERARCHY": [
+        {
+            "ROOT": "CUSTOMER",
+            "UPPERLEVEL": [
+                {
+                    "TABLE_NAME": "CITY",
+                    "FKinLOWERLEVEL": "C_CITY",
+                    "HCOLNAME": "CI_NAME",
+                    "COLUMNS": ["C_CITY", "CI_NAME", "ID_CITY_C"],
+                    "UPPERLEVEL": [
+                        {
+                            "TABLE_NAME": "NATION",
+                            "FKinLOWERLEVEL": "CI_NATIONKEY",
+                            "HCOLNAME": "N_NAME",
+                            "COLUMNS": ["C_NATION", "N_NAME", "N_NATIONKEY"],
+                            "UPPERLEVEL": [
+                                {
+                                    "TABLE_NAME": "REGION",
+                                    "FKinLOWERLEVEL": "N_REGIONKEY",
+                                    "HCOLNAME": "R_NAME",
+                                    "COLUMNS": ["C_REGION", "R_REGIONKEY"]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "ROOT": "SUPPLIER",
+            "UPPERLEVEL": [
+                {
+                    "TABLE_NAME": "CITY",
+                    "FKinLOWERLEVEL": "S_CITY",
+                    "HCOLNAME": "SI_NAME",
+                    "COLUMNS": ["S_CITY", "SI_NAME", "ID_CITY_S"],
+                    "UPPERLEVEL": [
+                        {
+                            "TABLE_NAME": "NATION",
+                            "FKinLOWERLEVEL": "SI_NATIONKEY",
+                            "HCOLNAME": "N_NAME",
+                            "COLUMNS": ["S_NATION", "N_NAME", "N_NATIONKEY"],
+                            "UPPERLEVEL": [
+                                {
+                                    "TABLE_NAME": "REGION",
+                                    "FKinLOWERLEVEL": "N_REGIONKEY",
+                                    "HCOLNAME": "R_NAME",
+                                    "COLUMNS": ["S_REGION", "R_REGIONKEY"]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "ROOT": "PART",
+            "UPPERLEVEL": [
+                {
+                    "TABLE_NAME": "BRAND1",
+                    "FKinLOWERLEVEL": "P_BRAND1",
+                    "HCOLNAME": "B_NAME",
+                    "COLUMNS": ["P_BRAND1", "B1_VAL", "B_NAME","ID_BRAND1"],
+                    "UPPERLEVEL": [
+                        {
+                            "TABLE_NAME": "CATEGORY",
+                            "FKinLOWERLEVEL": "B_CATEGORYKEY",
+                            "HCOLNAME": "CA_NAME",
+                            "COLUMNS": ["P_CATEGORY", "CA_NAME","ID_CATEGORY"],
+                            "UPPERLEVEL": [
+                                {
+                                    "TABLE_NAME": "MFGR",
+                                    "FKinLOWERLEVEL": "CA_MFGRKEY",
+                                    "HCOLNAME": "M_NAME",
+                                    "COLUMNS": ["P_MFGR", "ID_MFGR"]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "ROOT": "DATE",
+            "UPPERLEVEL": [
+                {
+                    "TABLE_NAME": "YEARMONTH",
+                    "FKinLOWERLEVEL": "D_YEARMONTH",
+                    "HCOLNAME": "YM_NAME",
+                    "COLUMNS": ["D_YEARMONTH", "ID_YM"],
+                    "UPPERLEVEL": [
+                        {
+                            "TABLE_NAME": "YEAR",
+                            "FKinLOWERLEVEL": "YM_YEARKEY",
+                            "HCOLNAME": "Y_NAME",
+                            "COLUMNS": ["D_YEAR", "Y_NAME", "Y_KEY"]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "ROOT": "LINEORDER",
+            "UPPERLEVEL": [
+                {
+                    "TABLE_NAME": "DATE",
+                    "FKinLOWERLEVEL": "DATE_FK",
+                    "HCOLNAME": "D_PK"
+                },
+                {
+                    "TABLE_NAME": "PART",
+                    "FKinLOWERLEVEL": "LO_PARTKEY",
+                    "HCOLNAME": "P_PARTKEY"
+                },
+                {
+                    "TABLE_NAME": "CUSTOMER",
+                    "FKinLOWERLEVEL": "LO_CUSTKEY",
+                    "HCOLNAME": "C_CUSTKEY"
+                },
+                {
+                    "TABLE_NAME": "SUPPLIER",
+                    "FKinLOWERLEVEL": "LO_SUPPKEY",
+                    "HCOLNAME": "S_SUPPKEY"
+                },
+                {
+                    "TABLE_NAME": "DISCOUNT",
+                    "FKinLOWERLEVEL": "DISCOUNT_FK",
+                    "HCOLNAME": "DIM_DISCOUNT_VAL",
+                    "COLUMNS": ["LO_DISCOUNT", "DIM_DISCOUNT_VAL"]
+                },
+                {
+                    "TABLE_NAME": "QUANTITY",
+                    "FKinLOWERLEVEL": "QUANTITY_FK",
+                    "HCOLNAME": "DIM_QUANTITY_VAL",
+                    "COLUMNS": ["LO_QUANTITY", "DIM_QUANTITY_VAL"]
+                }
+            ]
+        }
+
+    ]
+}

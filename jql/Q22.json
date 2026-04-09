@@ -1,0 +1,41 @@
+{
+	"SELECT":
+	 {
+	  "PROJECT":["REVENUE","D_YEAR","P_BRAND1"],
+	  "ORDERBY":[
+				 {"NAME":"D_YEAR",
+				  "MODE":"ASC"},
+				 {"NAME":"P_BRAND1",
+				  "MODE":"ASC"}
+	  ],
+	  "OLAP":[{"DRILLDOWN":[
+				 {"FILTER":
+					{"NAME":"P_BRAND1",
+					 "EXPRESSION":"BETWEENAND",
+					 "VALUE":["MFGR#2221","MFGR#2228"]},
+				  "GROUP":"P_BRAND1",
+				  "DIMENSION":"PART"
+				  },
+				 {"FILTER":
+					{"NAME":"S_REGION",
+					 "EXPRESSION":"=",
+					 "VALUE":"ASIA"},
+				  "GROUP":{},
+				  "DIMENSION":"SUPPLIER"},
+				  {"FILTER":{},
+                "GROUP":"D_YEAR",
+                "DIMENSION":"DATE"
+                }
+				  ]}],
+	  "FILTING":[],
+	  "AGG":[{
+			  "FUNCTION":"SUM",
+			  "EXPRESSION":"LO_REVENUE",
+			  "ALIAS":"REVENEU",
+			  "TABLE":"LINEORDER",
+			  "EXECUTION_ENGINE": "CPU"
+			 }
+			]
+	 }
+	}
+	

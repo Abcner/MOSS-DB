@@ -1,0 +1,46 @@
+[{
+		"type":	"dimension",
+		"parameters":	[{
+				"from":	"date",
+				"where":	[{
+						"op":	"=",
+						"column":	"d_yearmonth",
+						"value":	"Jan1994"
+					}]
+			}, {
+				"from":	"lineorder",
+				"where":	[{
+						"op":	">=",
+						"column":	"lo_discount",
+						"value":	4
+					}, {
+						"op":	"<=",
+						"column":	"lo_discount",
+						"value":	6,
+						"logic":	"AND"
+					}, {
+						"op":	">=",
+						"column":	"lo_quantity",
+						"value":	26,
+						"logic":	"AND"
+					}, {
+						"op":	"<=",
+						"column":	"lo_quantity",
+						"value":	35,
+						"logic":	"AND"
+					}]
+			}]
+	}, {
+		"type":	"measure",
+		"parameters":	{
+			"from":	"lineorder",
+			"FK_cols":	["lo_orderdate"],
+			"aggragate":	{
+				"aggerate":	"sum",
+				"agg_op":	"*",
+				"agg_cols":	["lo_extendedprice", "lo_discount"],
+				"agg_cols_type":	["column", "column"]
+			},
+			"ProjectColumn":	["revenue"]
+		}
+	}]
