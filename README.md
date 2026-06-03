@@ -100,3 +100,74 @@ make -j $ (nproc)
 file bin/moss_db
 # Expected output: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), ...
 ```
+
+## 5. RUNNING THE SYSTEM
+### Usage:
+```bash
+./moss_db  <jql_query_file>
+```
+### Example:
+#### Run SSB Query 1.1
+```bash
+./moss_db  ../jql/q11.json
+```
+#### Run SSB Query 3.4(With Rollup)
+```bash
+./moss_db  ../jql/q34.json
+```
+#### Run SSB Query 4.1 (With Profit Calculation)
+```bash
+./moss_db  ../jql/q41.json
+```
+## 6. JQL SPECIFICATION (JSON Query Language)
+### MOSS-DB uses a hierarchical JSON format to describe execution plans.
+```text
+Structure:
+{
+  "SELECT": {
+    "PROJECT": ["<Column1>", "<Column2>"],
+    "ORDERBY": [ ... ]，
+    "OLAP": [
+      {
+        "DRILLDOWN": [ ... ],   // Standard Top-Down Filtering
+        "ROLLUP": [ ... ]       // Optimized Bottom-Up Filtering
+      }
+    ],
+    "FILTING":[],
+    "AGG": [
+      {
+        "FUNCTION": "SUM",
+        "EXPRESSION": "LO_REVENUE-LO_SUPPLYCOST", // Supports *, -, +
+        "ALIAS": "PROFIT",
+        "TABLE": "LINEORDER"
+      }
+    ]
+  }
+}
+
+[Filter Definition]
+Filters can be single objects or arrays (for multi-predicate filtering on one dimension).
+- "EXPRESSION": Supports "=", "<", ">", "BETWEEN", "BETWEENAND", "OR".
+- "VALUE": Can be a single value, an array [v1, v2] for BETWEEN, or a list for IN.
+```
+## 7.ARCHITECTURAL HIGHLIGHTS & OPTIMIZATIONS
+### 1.  **Schema-Agnostic Rollup**:
+    The engine automatically resolves parent-child relationships in the Rollup 
+    path by traversing the Join Graph, removing the need for explicit table 
+    names in the query.
+
+### 2.  **Kernel Fusion (CPU & GPU)**:
+    - `FilterEqualWithMask`: Combines bitmap checking and value comparison into 
+      a single pass to reduce memory traffic.
+    - `ProbeDenseKernel`: Fuses Hash Join probing, Predicate evaluation, and 
+      Aggregation into a single CUDA kernel.
+
+### 3.  **Template Metaprogramming for Aggregation**:
+    The CUDA Probe Kernel uses C++17 `if constexpr` and template parameters (`AggOp`) 
+    to generate specialized kernels for SUM, PRODUCT, and SUBTRACT operations 
+    at compile-time, avoiding runtime branching overhead on the GPU.
+
+### 4.  **Benign Race Optimization**:
+    In the Rollup phase (`FilterChildAndMarkParent`), the engine utilizes benign 
+    data races to update parent validity bitmaps in parallel without expensive 
+    atomic locks, significantly speeding up the dimension reduction phase.
