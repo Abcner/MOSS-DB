@@ -1,60 +1,50 @@
-================================================================================
-                MOSS-DB: GPU-Accelerated In-Memory Database Prototype
-                     Targeting Star Schema Benchmark (SSB)
-================================================================================
+# MOSS-DB: GPU-Accelerated In-Memory Database Prototype
+> **Targeting Star Schema Benchmark (SSB)**
 
-[Version]       1.0.0 (Alpha - Research Prototype)
-[Author]        GPU Database Research Group -- Ruichen Han
-[License]       RUC License / Academic Use Only
-[Standard]      Compliant with TPDS (IEEE Trans. Parallel Distrib. Syst.) coding standards
+* **Version**: 1.0.0 (Alpha - Research Prototype)
+* **Author**: GPU Database Research Group -- Ruichen Han
+* **License**: RUC License / Academic Use Only
+* **Standard**: Compliant with TPDS (IEEE Trans. Parallel Distrib. Syst.) coding standards
 
-================================================================================
-1. OVERVIEW
-================================================================================
+---
 
-MOSS-DB is a high-performance, GPU-accelerated in-memory database engine designed 
-specifically for OLAP (Online Analytical Processing) workloads. It implements a 
-complete execution pipeline for the Star Schema Benchmark (SSB), featuring a custom 
-JSON-based Query Language (JQL).
+## 1. OVERVIEW
 
-Key architectural features include:
-1.  **Columnar Storage**: Utilizing dictionary encoding and bit-packing for efficient 
-    GPU memory utilization.
-2.  **JQL Parser**: A schema-agnostic parser supporting complex OLAP operations 
-    (Drill-Down, Rollup) and predicate pushdown.
-3.  **Late Materialization**: Processing strictly on ID-based compressed data until 
-    the final result generation phase.
-4.  **Optimized CUDA Kernels**: 
-    - Template-based `ProbeDenseKernel` supporting dynamic aggregation modes 
-      (SUM, PRODUCT, SUBTRACT).
-    - Fused Filter Operators (`FilterEqualWithMask`) to minimize memory bandwidth.
-5.  **Advanced Rollup Optimization**: A specialized Bottom-Up execution strategy 
-    for hierarchical dimensions (e.g., Date -> Month -> Year) to reduce join 
-    cardinality early.
+MOSS-DB is a high-performance, GPU-accelerated in-memory database engine designed specifically for OLAP (Online Analytical Processing) workloads. It implements a complete execution pipeline for the Star Schema Benchmark (SSB), featuring a custom JSON-based Query Language (JQL).
 
-================================================================================
-2. SYSTEM REQUIREMENTS
-================================================================================
+**Key architectural features include:**
+1. **Columnar Storage**: Utilizing dictionary encoding and bit-packing for efficient GPU memory utilization.
+2. **JQL Parser**: A schema-agnostic parser supporting complex OLAP operations (Drill-Down, Rollup) and predicate pushdown.
+3. **Late Materialization**: Processing strictly on ID-based compressed data until the final result generation phase.
+4. **Optimized CUDA Kernels**: 
+   - Template-based `ProbeDenseKernel` supporting dynamic aggregation modes (SUM, PRODUCT, SUBTRACT).
+   - Fused Filter Operators (`FilterEqualWithMask`) to minimize memory bandwidth.
+5. **Advanced Rollup Optimization**: A specialized Bottom-Up execution strategy for hierarchical dimensions (e.g., Date -> Month -> Year) to reduce join cardinality early.
 
-[Hardware]
-- CPU: x86_64 Architecture (Intel/AMD)
-- GPU: NVIDIA GPU with Compute Capability >= 6.0 (Pascal or newer)
-- RAM: Sufficient to hold the SSB dataset (Scale Factor dependent)
-- VRAM: At least 8GB recommended for SF=10
+---
 
-[Software]
-- OS: Linux (Ubuntu 20.04+ / CentOS 7+)
-- Compiler: GCC 7.0+ / Clang 6.0+ (Must support C++17)
-- CUDA Toolkit: 11.0 or higher
-- CMake: 3.15 or higher
-- Third-party Libraries:
-  - cJSON (Included in `include/common/`) for JQL parsing.
-  - OpenMP (For CPU-side parallelism in Phase 1 & 2).
+## 2. SYSTEM REQUIREMENTS
 
-================================================================================
-3. PROJECT STRUCTURE
-================================================================================
+### Hardware
+* **CPU**: x86_64 Architecture (Intel/AMD)
+* **GPU**: NVIDIA GPU with Compute Capability >= 6.0 (Pascal or newer)
+* **RAM**: Sufficient to hold the SSB dataset (Scale Factor dependent)
+* **VRAM**: At least 8GB recommended for SF=10
 
+### Software
+* **OS**: Linux (Ubuntu 20.04+ / CentOS 7+)
+* **Compiler**: GCC 7.0+ / Clang 6.0+ (**Must support C++17**)
+* **CUDA Toolkit**: 11.0 or higher
+* **CMake**: 3.15 or higher
+* **Third-party Libraries**:
+  * `cJSON` (Included in `include/common/`) for JQL parsing.
+  * `OpenMP` (For CPU-side parallelism in Phase 1 & 2).
+
+---
+
+## 3. PROJECT STRUCTURE
+
+```text
 MOSS-DB/
 ├── CMakeLists.txt              # [Build] CMake configuration defining C++17/CUDA flags, dependencies, and build rules.
 ├── README.md                   # [Doc] Project documentation, build instructions, and JQL specifications.
@@ -93,117 +83,3 @@ MOSS-DB/
     │       ├── term_gpu.cuh      # Termination/Cleanup kernels for resource management and early termination logic.
     │       └── probe_kernel.cuh  # [Kernel] Core ProbeDenseKernel fusing Hash Join probing, predicates, and multi-mode aggregation (SUM/PRODUCT/SUBTRACT).
 
-================================================================================
-4. BUILD INSTRUCTIONS
-================================================================================
-
-1.  Create a build directory:
-    $ mkdir build && cd build
-
-2.  Configure the project (Ensure C++17 is enabled):
-    $ cmake -DCMAKE_BUILD_TYPE=Release ..     # Release mode
-    $ cmake -DCUDA_ARCH=80 ..                 # Specify architecture (e.g., 80 for Ampere A100/3090)
-
-3.  Compile:
-    $ make -j$(nproc)
-
-    *Note: If you encounter "constexpr if" warnings, verify that the -std=c++17 
-     flag is correctly set in your CMakeLists.txt.*
-
-================================================================================
-5. RUNNING THE SYSTEM
-================================================================================
-
-Usage:
-    ./moss_db  <jql_query_file>
-
-Example:
-    # Run SSB Query 1.1
-    $ ./moss_db  ../jql/q11.json
-
-    # Run SSB Query 3.4 (With Rollup)
-    $ ./moss_db  ../jql/q34.json
-
-    # Run SSB Query 4.1 (With Profit Calculation)
-    $ ./moss_db  ../jql/q41.json
-
-[Expected Output]
-The system prints the Logical Query Plan, Execution Phases (Time taken), 
-Kernel Launch Configuration, and the Final Result Table.
-
-================================================================================
-6. JQL SPECIFICATION (JSON Query Language)
-================================================================================
-
-MOSS-DB uses a hierarchical JSON format to describe execution plans.
-
-Structure:
-{
-  "SELECT": {
-    "PROJECT": ["<Column1>", "<Column2>"],
-    "ORDERBY": [ ... ],
-    "OLAP": [
-      {
-        "DRILLDOWN": [ ... ],   // Standard Top-Down Filtering
-        "ROLLUP": [ ... ]       // Optimized Bottom-Up Filtering
-      }
-    ],
-    "FILTING":[],
-    "AGG": [
-      {
-        "FUNCTION": "SUM",
-        "EXPRESSION": "LO_REVENUE-LO_SUPPLYCOST", // Supports *, -, +
-        "ALIAS": "PROFIT",
-        "TABLE": "LINEORDER"
-      }
-    ]
-  }
-}
-
-[Filter Definition]
-Filters can be single objects or arrays (for multi-predicate filtering on one dimension).
-- "EXPRESSION": Supports "=", "<", ">", "BETWEEN", "BETWEENAND", "OR".
-- "VALUE": Can be a single value, an array [v1, v2] for BETWEEN, or a list for IN.
-
-================================================================================
-7. ARCHITECTURAL HIGHLIGHTS & OPTIMIZATIONS
-================================================================================
-
-1.  **Schema-Agnostic Rollup**:
-    The engine automatically resolves parent-child relationships in the Rollup 
-    path by traversing the Join Graph, removing the need for explicit table 
-    names in the query.
-
-2.  **Kernel Fusion (CPU & GPU)**:
-    - `FilterEqualWithMask`: Combines bitmap checking and value comparison into 
-      a single pass to reduce memory traffic.
-    - `ProbeDenseKernel`: Fuses Hash Join probing, Predicate evaluation, and 
-      Aggregation into a single CUDA kernel.
-
-3.  **Template Metaprogramming for Aggregation**:
-    The CUDA Probe Kernel uses C++17 `if constexpr` and template parameters (`AggOp`) 
-    to generate specialized kernels for SUM, PRODUCT, and SUBTRACT operations 
-    at compile-time, avoiding runtime branching overhead on the GPU.
-
-4.  **Benign Race Optimization**:
-    In the Rollup phase (`FilterChildAndMarkParent`), the engine utilizes benign 
-    data races to update parent validity bitmaps in parallel without expensive 
-    atomic locks, significantly speeding up the dimension reduction phase.
-
-================================================================================
-8. TROUBLESHOOTING
-================================================================================
-
-Q: "Rollup nodes not found" error?
-A: Ensure your `jql/join_path.json` correctly defines the hierarchy (e.g., 
-   Date -> YearMonth -> Year) and that the columns in the JQL query match 
-   the schema definition.
-
-Q: Incorrect Result in Q4?
-A: Check if the Aggregation Expression uses "-" and if the `ProbeDenseKernel` 
-   was correctly instantiated with `AggOp::SUBTRACT` in `main_engine.cu`.
-
-Q: Compilation fails with "constexpr if" warning?
-A: Your compiler is not using C++17. Add `set(CMAKE_CXX_STANDARD 17)` to CMakeLists.txt.
-
-================================================================================
