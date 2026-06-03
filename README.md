@@ -82,4 +82,19 @@ MOSS-DB/
     │       ├── reduce_gpu.cuh    # Reduction kernels: BlockReduceSum for block-level aggregation (Scalar Aggregation).
     │       ├── term_gpu.cuh      # Termination/Cleanup kernels for resource management and early termination logic.
     │       └── probe_kernel.cuh  # [Kernel] Core ProbeDenseKernel fusing Hash Join probing, predicates, and multi-mode aggregation (SUM/PRODUCT/SUBTRACT).
+## 4. BUILD INSTRUCTIONS
 
+### Standard Build (Generic x86_64)
+```bash
+# 1. Create build directory
+mkdir build && cd build
+
+# 2. Configure with C++17 and default CUDA architecture
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17 ..
+
+# 3. Compile with all available cores
+make -j $ (nproc)
+
+# 4. Verify binary (Check ELF header and GPU architecture)
+file bin/moss_db
+# Expected output: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), ...
