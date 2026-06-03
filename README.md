@@ -4,7 +4,7 @@
 ================================================================================
 
 [Version]       1.0.0 (Alpha - Research Prototype)
-[Author]        GPU Database Research Group--Ruichen Han
+[Author]        GPU Database Research Group -- Ruichen Han
 [License]       RUC License / Academic Use Only
 [Standard]      Compliant with TPDS (IEEE Trans. Parallel Distrib. Syst.) coding standards
 
@@ -56,43 +56,42 @@ Key architectural features include:
 ================================================================================
 
 MOSS-DB/
-├── CMakeLists.txt              # [Build] CMake 构建配置文件，定义编译选项(C++17/CUDA)、依赖库连接及可执行文件生成规则
-├── README.md                   # [Doc] 项目说明文档，包含编译指南、JQL规范说明及系统架构概览
-├── build                       # [Artifacts] 存放 CMake 生成的中间构建文件（Makefile, Cache 等）
-├── bin                         # [Binaries] 存放编译生成的最终可执行文件（如 moss_db）
-├── cmake                       # [Build] 自定义的 CMake 模块脚本（例如 FindCUDA.cmake 等环境检测脚本）
-├── data/                       # [Data] 存放 SSB 基准测试的原始数据文件（.tbl 格式），用于加载到内存并构建字典编码
-├── jql/                        # [Query] JQL (JSON Query Language) 查询脚本目录，涵盖 SSB Q1-Q4 测试集
-│   ├── q11.json                # Q1.1 查询定义：测试标量聚合与高选择率过滤
-│   ├── q21.json                # Q2.1 查询定义：测试分组聚合与维度 Drill-down
-│   ├── q34.json                # Q3.4 查询定义：演示 Drill-down 与 Rollup 混合操作的复杂执行计划
-│   └── q41.json                # Q4.1 查询定义：演示模板化减法聚合 (LO_REVENUE - LO_SUPPLYCOST)
-├── src/                        # [Source] 系统核心源代码目录
-│   └── main_engine.cu          # [Core] 核心执行引擎入口，负责 JQL 解析、查询计划生成、Pipeline 调度 (Phase 1-5) 及结果物化
-├── lib/                        # [Lib] 编译好的静态库或共享库文件（如 libcjson.a）
-├── external/                   # [Deps] 第三方依赖库源码
-│   └── cjson                   # [Parser] cJSON 库源码，用于解析 JQL 的 JSON 结构
-├── logs/                       # [Logs] 运行时生成的日志文件，记录查询延迟、内存使用及内核 Profiling 数据
-└── include/                    # [Header] 头文件目录，定义数据结构、宏及算子接口
-    ├── common/                 # [Common] 通用工具与配置
-    │   ├── config.h            # 全局配置参数（如 CUDA Block Size, Items Per Thread, Max Joins）
-    │   ├── gpu_db_utils.h      # CUDA 错误检查宏 (CHECK_CUDA)、显存分配/拷贝辅助函数
-    │   └── timer.h             # 高精度计时器，用于统计各个执行阶段（Phase 1-5）的耗时
-    ├── ssb+/                   # [Schema] SSB 业务相关定义
-    │   └── ssb+_utils.h        # SSB 表结构定义、列映射关系及数据加载辅助工具
-    ├── operators/              # [Operators] 数据库算子实现
-    │   ├── cpu/                # [CPU Ops] CPU 端算子，主要用于 Phase 1 (Dimension Reduction) 和 Phase 2
-    │   │   ├── pred_cpu.h      # 谓词过滤算子：包含 FilterEqual, FilterRange 及融合算子 FilterEqualWithMask
-    │   │   ├── compress_cpu.h  # 字典压缩算子：用于构建 Bitmap 和生成 Compressed Index
-    │   │   └── join_cpu.h      # CPU Join 算子：包含 JoinProbeAndMap，用于 Rollup 优化中的父子维度数据传递
-    │   └── gpu/                # [GPU Ops] GPU 端算子，主要用于 Phase 4 (Fact Table Processing)
-            ├── build_kernels.cuh # 构建阶段内核：用于 Hash 表或 Bitmap 的初始化（如需 GPU 构建）
-            ├── join_gpu.cuh      # GPU Join 辅助内核：处理复杂的关联逻辑或 Metadata 准备
-            ├── load_gpu.cuh      # 数据加载内核：负责列式数据的高效显存加载与对齐
-            ├── reduce_gpu.cuh    # 归约内核：包含 BlockReduceSum，用于标量聚合（Scalar Aggregation）的 Block 级汇总
-            ├── term_gpu.cuh      # 终止/清理内核：负责 GPU 资源的清理或特定条件的提前终止逻辑
-            └── probe_kernel.cuh  # [Kernel] 核心探测内核 (ProbeDenseKernel)：融合了 Hash Join、谓词计算与多模式聚合 (SUM/PRODUCT/SUBTRACT)
-    
+├── CMakeLists.txt              # [Build] CMake configuration defining C++17/CUDA flags, dependencies, and build rules.
+├── README.md                   # [Doc] Project documentation, build instructions, and JQL specifications.
+├── build/                      # [Artifacts] Directory for CMake-generated intermediate build files.
+├── bin/                        # [Binaries] Directory for compiled executables (e.g., moss_db).
+├── cmake/                      # [Build] Custom CMake modules (e.g., FindCUDA.cmake for environment detection).
+├── data/                       # [Data] Raw SSB benchmark datasets (.tbl format) for memory loading and dictionary encoding.
+├── jql/                        # [Query] JSON Query Language scripts covering SSB Q1-Q4 workloads.
+│   ├── q11.json                # Q1.1: Tests scalar aggregation and high-selectivity filtering.
+│   ├── q21.json                # Q2.1: Tests grouped aggregation and dimension Drill-down.
+│   ├── q34.json                # Q3.4: Demonstrates complex execution plans with mixed Drill-down and Rollup operations.
+│   └── q41.json                # Q4.1: Demonstrates templated subtraction aggregation (LO_REVENUE - LO_SUPPLYCOST).
+├── src/                        # [Source] Core system source code.
+│   └── main_engine.cu          # [Core] Main execution engine handling JQL parsing, plan generation, pipeline scheduling (Phase 1-5), and materialization.
+├── lib/                        # [Lib] Compiled static/shared libraries (e.g., libcjson.a).
+├── external/                   # [Deps] Third-party dependency source code.
+│   └── cjson/                  # [Parser] cJSON library for parsing JQL structural components.
+├── logs/                       # [Logs] Runtime logs recording query latency, memory consumption, and kernel profiling data.
+└── include/                    # [Header] Header files defining data structures, macros, and operator interfaces.
+    ├── common/                 # [Common] Utility functions and global configurations.
+    │   ├── config.h            # Global parameters (e.g., CUDA Block Size, Items Per Thread, Max Joins).
+    │   ├── gpu_db_utils.h      # CUDA error checking macros (CHECK_CUDA) and VRAM allocation/copy wrappers.
+    │   └── timer.h             # High-precision timers for profiling execution phases (Phase 1-5).
+    ├── ssb+/                   # [Schema] SSB business logic and schema definitions.
+    │   └── ssb+_utils.h        # SSB table structures, column mappings, and data loading utilities.
+    ├── operators/              # [Operators] Database operator implementations.
+    │   ├── cpu/                # [CPU Ops] CPU-side operators for Phase 1 (Dimension Reduction) and Phase 2.
+    │   │   ├── pred_cpu.h      # Predicate filters: FilterEqual, FilterRange, and fused FilterEqualWithMask.
+    │   │   ├── compress_cpu.h  # Dictionary compression: Bitmap construction and Compressed Index generation.
+    │   │   └── join_cpu.h      # CPU Join operators: JoinProbeAndMap for passing data between parent/child dimensions in Rollup.
+    │   └── gpu/                # [GPU Ops] GPU-side operators for Phase 4 (Fact Table Processing).
+    │       ├── build_kernels.cuh # Build phase kernels for Hash/Bitmap initialization (if GPU-built).
+    │       ├── join_gpu.cuh      # GPU Join helpers for complex association logic and metadata preparation.
+    │       ├── load_gpu.cuh      # Data loading kernels for efficient, aligned columnar memory access.
+    │       ├── reduce_gpu.cuh    # Reduction kernels: BlockReduceSum for block-level aggregation (Scalar Aggregation).
+    │       ├── term_gpu.cuh      # Termination/Cleanup kernels for resource management and early termination logic.
+    │       └── probe_kernel.cuh  # [Kernel] Core ProbeDenseKernel fusing Hash Join probing, predicates, and multi-mode aggregation (SUM/PRODUCT/SUBTRACT).
 
 ================================================================================
 4. BUILD INSTRUCTIONS
@@ -102,14 +101,14 @@ MOSS-DB/
     $ mkdir build && cd build
 
 2.  Configure the project (Ensure C++17 is enabled):
-    $ cmake -DCMAKE_BUILD_TYPE=Release ..     # Release
-    $ cmake  ..                               # 80 for Ampere (A100/3090)
+    $ cmake -DCMAKE_BUILD_TYPE=Release ..     # Release mode
+    $ cmake -DCUDA_ARCH=80 ..                 # Specify architecture (e.g., 80 for Ampere A100/3090)
 
 3.  Compile:
     $ make -j$(nproc)
 
-    *Note: If you encounter "constexpr if" warnings, verify that -std=c++17 
-     flag is correctly set in CMakeLists.txt.*
+    *Note: If you encounter "constexpr if" warnings, verify that the -std=c++17 
+     flag is correctly set in your CMakeLists.txt.*
 
 ================================================================================
 5. RUNNING THE SYSTEM
@@ -142,7 +141,7 @@ Structure:
 {
   "SELECT": {
     "PROJECT": ["<Column1>", "<Column2>"],
-    "ORDERBY": [ ... ]，
+    "ORDERBY": [ ... ],
     "OLAP": [
       {
         "DRILLDOWN": [ ... ],   // Standard Top-Down Filtering
