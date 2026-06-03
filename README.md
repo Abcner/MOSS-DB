@@ -99,3 +99,4 @@ make -j $ (nproc)
 # 4. Verify binary (Check ELF header and GPU architecture)
 file bin/moss_db
 # Expected output: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), ...
+```
