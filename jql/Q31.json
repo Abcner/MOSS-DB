@@ -37,7 +37,7 @@
 			  "EXPRESSION":"LO_REVENUE",
 			  "ALIAS":"REVENEU",
 			  "TABLE":"LINEORDER",
-			  "EXECUTION_ENGINE": "CPU"
+			  "EXECUTION_ENGINE": "GPU"
 			 }
 			]
 	 }
