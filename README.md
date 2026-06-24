@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="images/MOSSDB.png" alt="Logo" width="200">
-</p>
+
 # MOSS-DB: GPU-Accelerated In-Memory Database Prototype
 > **Targeting Star Schema Benchmark (SSB)**
 
@@ -10,7 +8,9 @@
 * **Standard**: Compliant with TPDS (IEEE Trans. Parallel Distrib. Syst.) coding standards
 
 ---
-
+<p align="center">
+  <img src="images/MOSSDB.png" alt="Logo" width="200">
+</p>
 ## 1. OVERVIEW
 
 MOSS-DB is a high-performance, GPU-accelerated in-memory database engine designed specifically for OLAP (Online Analytical Processing) workloads. It implements a complete execution pipeline for the Star Schema Benchmark (SSB), featuring a custom JSON-based Query Language (JQL).
