@@ -45,7 +45,7 @@
                             "EXPRESSION": "LO_EXTENDEDPRICE*LO_DISCOUNT",
                             "ALIAS": "REVENEU",
                             "TABLE": "LINEORDER",
-                            "EXECUTION_ENGINE": "CPU"
+                            "EXECUTION_ENGINE": "GPU"
                     }
             ]
     }
