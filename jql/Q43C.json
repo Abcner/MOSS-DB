@@ -1,0 +1,46 @@
+{
+	"SELECT":
+	 {
+	  "PROJECT":["D_YEAR","S_CITY","P_BRAND1","PROFIT"],
+	  "ORDERBY":[
+				 {"NAME":"D_YEAR",
+				  "MODE":"ASC"},
+				 {"NAME":"S_CITY",
+				  "MODE":"ASC"},
+				 {"NAME":"P_BRAND",
+				  "MODE":"ASC"}
+	  ],
+	  "OLAP":[{"DRILLDOWN":[
+				 {"FILTER":
+					{"NAME":"S_NATION",
+					 "EXPRESSION":"=",
+					 "VALUE":"UNITED STATES"},
+				  "GROUP":"S_CITY",
+				  "DIMENSION":"SUPPLIER"},
+				 {"FILTER":
+					{"NAME":"P_CATEGORY",
+					 "EXPRESSION":"=",
+					 "VALUE":"MFGR#14"},
+				  "GROUP":"P_BRAND1",
+				  "DIMENSION":"PART"},
+				 {"FILTER":
+					{"NAME":"D_YEAR",
+					 "EXPRESSION":"OR",
+					 "VALUE":[1997,1998],
+					 "TABLE":"YEAR"},
+				  "GROUP":"D_YEAR",
+				  "DIMENSION":"DATE"
+				  }
+				  ]}],
+	  "FILTING":[],
+	  "AGG":[{
+			  "FUNCTION":"SUM",
+			  "EXPRESSION":"LO_REVENUE-LO_SUPPLYCOST",
+			  "ALIAS":"PROFIT",
+			  "TABLE":"LINEORDER",
+			  "EXECUTION_ENGINE": "CPU"
+			 }
+			]
+	 }
+	}
+	
