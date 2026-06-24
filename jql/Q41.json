@@ -41,7 +41,7 @@
 			  "EXPRESSION":"LO_REVENUE-LO_SUPPLYCOST",
 			  "ALIAS":"PROFIT",
 			  "TABLE":"LINEORDER",
-			  "EXECUTION_ENGINE": "CPU"
+			  "EXECUTION_ENGINE": "GPU"
 			 }
 			]
 	 }
