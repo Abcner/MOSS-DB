@@ -1,0 +1,55 @@
+{
+        "SELECT": {
+                "PROJECT": ["REVENUE"],
+                "ORDERBY": ["NONE"],
+                "OLAP": [
+                        {
+                                "DRILLDOWN": [
+                                        {
+                                                "FILTER": [
+                                                        {
+                                                                "NAME": "D_YEARMONTH",
+                                                                "EXPRESSION": "=",
+                                                                "VALUE": "Jan1994"
+                                                        }
+                                                ],
+                                                "GROUP": {},
+                                                "DIMENSION": "DATE"
+                                        },
+                                        {
+                                                "FILTER": [
+                                                        {
+                                                                "NAME": "LO_DISCOUNT",
+                                                                "EXPRESSION": "BETWEENAND",
+                                                                "VALUE": [
+                                                                        4,
+                                                                        6
+                                                                ]
+                                                        },
+                                                        {
+                                                                "NAME": "LO_QUANTITY",
+                                                                "EXPRESSION": "BETWEENAND",
+                                                                "VALUE": [
+                                                                        26,
+                                                                        35
+                                                                ]
+                                                        }
+                                                ],
+                                                "GROUP": {},
+                                                "DIMENSION": "LINEORDER"
+                                        }
+                                ]
+                        }
+                ],
+                "FILTING": [],
+                "AGG": [
+                        {
+                                "FUNCTION": "SUM",
+                                "EXPRESSION": "LO_EXTENDEDPRICE*LO_DISCOUNT",
+                                "ALIAS": "REVENEU",
+                                "TABLE": "LINEORDER",
+                                "EXECUTION_ENGINE": "GPU"
+                        }
+                ]
+        }
+    }
