@@ -1,0 +1,60 @@
+{
+        "SELECT": {
+                "PROJECT": ["REVENUE"],
+                "ORDERBY": ["NONE"],
+                "OLAP": [
+                        {
+                                "DRILLDOWN": [
+                                        {
+                                                "FILTER": [
+                                                        {
+                                                                "NAME": "D_YEAR",
+                                                                "EXPRESSION": "=",
+                                                                "VALUE": "1994"
+                                                        },
+                                                        {
+                                                                "NAME": "D_WEEKNUMINYEAR",
+                                                                "EXPRESSION": "=",
+                                                                "VALUE": "6"
+                                                        }
+                                                ],
+                                                "GROUP": {},
+                                                "DIMENSION": "DATE"
+                                        },
+                                        {
+                                                "FILTER": [
+                                                        {
+                                                                "NAME": "LO_DISCOUNT",
+                                                                "EXPRESSION": "BETWEENAND",
+                                                                "VALUE": [
+                                                                        5,
+                                                                        7
+                                                                ]
+                                                        },
+                                                        {
+                                                                "NAME": "LO_QUANTITY",
+                                                                "EXPRESSION": "BETWEENAND",
+                                                                "VALUE": [
+                                                                        26,
+                                                                        35
+                                                                ]
+                                                        }
+                                                ],
+                                                "GROUP": {},
+                                                "DIMENSION": "LINEORDER"
+                                        }
+                                ]
+                        }
+                ],
+                "FILTING": [],
+                "AGG": [
+                        {
+                                "FUNCTION": "SUM",
+                                "EXPRESSION": "LO_EXTENDEDPRICE*LO_DISCOUNT",
+                                "ALIAS": "REVENEU",
+                                "TABLE": "LINEORDER",
+                                "EXECUTION_ENGINE": "CPU"
+                        }
+                ]
+        }
+}
