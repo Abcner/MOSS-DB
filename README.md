@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="images/MOSSDB.png" alt="Logo" width="200">
+</p>
 # MOSS-DB: GPU-Accelerated In-Memory Database Prototype
 > **Targeting Star Schema Benchmark (SSB)**
 
