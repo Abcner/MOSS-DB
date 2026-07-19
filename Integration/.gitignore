@@ -1,0 +1,17 @@
+# Compiled Object files
+*.o
+*.so
+
+# CMake and build files
+build/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+
+# IDEs
+.idea/
+.vscode/
+
+# Ignore local test logs
+*.log
